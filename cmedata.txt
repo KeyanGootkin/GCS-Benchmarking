@@ -1,2 +1,2 @@
-CME:Velocity:Half-Angle:Longitude:Latitude
-0:0:0:0:0
+CME:Velocity:Half-Width:Ratio:Longitude:Latitude:Tilt:Time to 21.5
+0:0:0:0:0:0:0:0
