@@ -1,4 +1,2 @@
 CME:Velocity:Half-Angle:Longitude:Latitude
 0:0:0:0:0
-
-ignore this
