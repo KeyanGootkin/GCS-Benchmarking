@@ -6,4 +6,4 @@ import os
 datafile = str(os.path.dirname(os.path.realpath(__file__)))+"/cmedata.txt"
 print(datafile)
 table = pd.read_csv(datafile, sep = ':',header=0)
-print()
+print(table)
