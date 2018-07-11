@@ -57,12 +57,15 @@ def line_fit_cme():
 def funct(x,s,i):
     return(s*x+i)
 
+def cme_line_fit(ts,hs):
+    popt,pcov = curve_fit(funct,ts,hs)
+    s,i = popt[0],popt[1]
+    x = np.linspace(min(ts),max(ts),10)
+    plt.scatter(ts,hs)
+    plt.plot(x,(s*x+i),'r')
+    plt.title("Velocity (km/s): " +str(s*Rsun/60))
+    plt.show()
+
 ts,hs = line_fit_cme()
 print(ts,hs)
-popt,pcov = curve_fit(funct,ts,hs)
-s,i = popt[0],popt[1]
-x = np.linspace(min(ts),max(ts),10)
-plt.scatter(ts,hs)
-plt.plot(x,(s*x+i),'r')
-plt.title("Velocity (km/s): " +str(s*Rsun/60))
-plt.show()
+cme_line_fit(ts,hs)

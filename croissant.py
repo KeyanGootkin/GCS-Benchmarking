@@ -97,3 +97,16 @@ def add_zulu(start_zulu, added_time):
             end_zulu = input("Please calculate the end date, the start date was " + str(
                 start_zulu) + ' and you must add ' + str(added_time) + ' minutes. ')
     return(end_zulu)
+
+def funct(x,s,i):
+    #This is just for cme_line_fit's curve_fit, it needs to be a pre-defined function for some reason
+    return(s*x+i)
+
+def cme_line_fit(ts,hs):
+    popt,pcov = curve_fit(funct,ts,hs)
+    s,i = popt[0],popt[1]
+    x = np.linspace(min(ts),max(ts),10)
+    plt.scatter(ts,hs)
+    plt.plot(x,(s*x+i),'r')
+    plt.title("Velocity (km/s): " +str(s*Rsun/60))
+    plt.show()
