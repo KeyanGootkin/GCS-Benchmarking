@@ -1,8 +1,9 @@
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
-from time import mktime
+from time import mktime, strptime
 from bisect import bisect
+import os
 
 
 def v_calc(h1, h2, deltat):
@@ -288,7 +289,7 @@ def cr2sh(date, carrington):
     carrots = np.loadtxt(
         str(os.path.dirname(os.path.realpath(__file__))) + "/carrots.txt")
     # turn input date into a mathable value
-    datemk = mktime(time.strptime(date, "%Y-%m-%dT%H:%M:00"))
+    datemk = mktime(strptime(date, "%Y-%m-%dT%H:%M:00"))
 
     # identify start and end times for the rotation
     rotation = bisect(carrots, datemk)
@@ -310,7 +311,7 @@ def sh2cr(date, stonyhurst):
         str(os.path.dirname(os.path.realpath(__file__))) + "/carrots.txt")
 
     # re-commenting this is beneath my dignity
-    datemk = mktime(time.strptime(date, "%Y-%m-%dT%H:%M:00"))
+    datemk = mktime(strptime(date, "%Y-%m-%dT%H:%M:00"))
 
     rotation = bisect(carrots, datemk)
     start = carrots[rotation - 1]
