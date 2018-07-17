@@ -1,2 +1,2 @@
-CME:Velocity:Half-Width:Ratio:Longitude:Latitude:Tilt:Time to 21.5
-0:0:0:0:0:0:0:0
+#   DATE     TIME     LON     LAT     ROT      HEIGHT RATIO  HALF ANGLE LOS RANGE  NBP
+ 2013-03-15T07:39:00 436.387  -1.000 -10.000   9.500  0.8000  20.000  -10   10  64
