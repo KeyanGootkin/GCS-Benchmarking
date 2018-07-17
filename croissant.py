@@ -145,18 +145,24 @@ def funct(x, s, i):
     return(s * x + i)
 
 
-def cme_line_fit(ts, hs):
-
-    # make x values to plot line regression against
-    x = np.linspace(min(ts), max(ts), 10)
-    # scatter plot the real data
-    plt.scatter(ts, hs)
-    # line plot the line of best fit
-    plt.plot(x, (s * x + i), 'r')
-    # put the slope (velocity) in the title
-    plt.title("Velocity (km/s): " + str(s * Rsun / 60))
-    # Show that figure!
-    plt.show()
+def cme_line_fit(ts, hs, return_slope = False):
+    popt,pcov = curve_fit(funct,ts,hs)
+    s,i = popt[0],popt[1]
+    #Maybe plot
+    if return_slope == False:
+        # make x values to plot line regression against
+        x = np.linspace(min(ts), max(ts), 10)
+        # scatter plot the real data
+        plt.scatter(ts, hs)
+        # line plot the line of best fit
+        plt.plot(x, (s * x + i), 'r')
+        # put the slope (velocity) in the title
+        plt.title("Velocity (km/s): " + str(s * Rsun / 60))
+        # Show that figure!
+        plt.show()
+    #Maybe return the slope
+    elif return_slope == True:
+        return(s,i)
 
 
 def find_cme_start(start_t, start_h, velocity):
