@@ -11,7 +11,13 @@ datafiles = []
 for folder in datafolders:
     for file in glob(folder+'/*'):
         datafiles.append(file)
+#Crawford does some stuff that will help me get a df that just has all the measurements for one CME in one place
 cmes = []
+for file in datafiles:
+    cmes.append(cr.single_cme_function(file))
+
+
+
 eUCLID = pd.DataFrame()
 for file in datafiles:
     average_df,start_t,start_h = cr.function_name(file)

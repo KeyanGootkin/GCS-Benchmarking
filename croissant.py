@@ -1,11 +1,31 @@
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
-import time
-import bisect
+from time import mktime
+from bisect import bisect
 
 
 def v_calc(h1, h2, deltat):
+    """
+    Takes the starting and ending heights of the CME and the time difference
+    between the two measurements and calculates velocity.
+
+    Parameters
+    ----------
+    h1 : float or string
+        Starting height of the CME
+
+    h2 : float or string
+        Ending height of the CME
+
+    deltat : float or string
+        Time difference between the measurements of h1 and h2
+
+    Returns
+    ----------
+    v : float
+        velocity of the CME
+    """
     # Radius of the sun in km, used for unit conversion
     Rsun = 695508
     # find the change in height of the CME in km and time in seconds
@@ -17,10 +37,25 @@ def v_calc(h1, h2, deltat):
 
 
 def find_v():
+    """
+    Querries the user, asking for h1, h2, and deltat (starting/ending heights
+    of the CME and the time difference) and returns these as floats.
+
+    Returns
+    ----------
+    h1 : float
+        Starting height of the CME
+
+    h2 : float
+        Ending height of the CME
+
+    deltat : float
+        Time difference between the measurements of h1 and h2
+    """
     # Queries user for starting time, ending time, and change in time
     h1 = float(input("What is the starting height? "))
     h2 = float(input("What is the ending height? "))
-    deltat = input("What is the time difference in minutes? ")
+    deltat = float(input("What is the time difference in minutes? "))
     # Calculate and print the velocity
     print("Velocity: " + str(v_calc(h1, h2, deltat)))
     # return starting height, ending height and change in time
@@ -28,6 +63,22 @@ def find_v():
 
 
 def find_many_v():
+    """
+    Querries the user, asking for h1, h2, and deltat (starting/ending heights
+    of the CME and the time difference) several times, and returns a list of the
+    values collected/derived in this process.
+
+    Returns
+    ----------
+    v_list : list
+        a list of all velocities calculated
+
+    t_list : list
+        a list of times, starting at 0, and adding deltat at each step.
+
+    h_list : list
+        a list of CME heights
+    """
     # start empty lists for velocity, time and height
     v_list = []
     t_list = []
@@ -57,6 +108,19 @@ def find_many_v():
 
 
 def line_fit_cme():
+    """
+    Querries the user, asking for h1, h2, and deltat (starting/ending heights
+    of the CME and the time difference) several times, and returns a list of the
+    values collected in this process.
+
+    Returns
+    ----------
+    time_list : list
+        a list of times, starting at 0, and adding deltat at each step.
+
+    height_list : list
+        a list of CME heights
+    """
     # start time at 0, and the time/height lists as empty
     time, time_list, height_list = 0, [], []
     # Loop through the data collection loop below until the user wants to exit
@@ -73,6 +137,20 @@ def line_fit_cme():
 
 
 def weird_date(zulu_date):
+    """
+    Takes a date in Zulu format, and converts it to a weird date, (roughly)
+    the number of days since the beginning of the year.
+
+    Parameters
+    ----------
+    zulu_date : string
+        Date and time in the format "YYYY-MM-DDTHH:MMZ"
+
+    Returns
+    ----------
+    Day : integer
+        Very roughly the number of days since the beginning of that year.
+    """
     # Returns number of days since the beginning of the year, roughly
     days = 0
     days += (int(zulu_date[5:7]) * 30 + int(zulu_date[8:10]))
@@ -80,6 +158,20 @@ def weird_date(zulu_date):
 
 
 def weird_time(zulu_time):
+    """
+    Takes a date in Zulu format, and converts it to a weird time, (roughly)
+    the number of minutes since the beginning of the year.
+
+    Parameters
+    ----------
+    zulu_time : string
+        Date and time in the format "YYYY-MM-DDTHH:MMZ"
+
+    Returns
+    ----------
+    time : integer
+        Very roughly the number of minutes since the beginning of that year.
+    """
     # returns the number of minutes since the beginning of the year, roughly
     time = 0
     time += (int(zulu_time[11:13]) * 60) + int(zulu_time[14:16])
@@ -88,6 +180,21 @@ def weird_time(zulu_time):
 
 
 def z_to_weird(zulu_times_list):
+    """
+    Takes a list of dates in Zulu format, and converts it to a list of weird times,
+    (roughly) the number of minutes since the beginning of the year.
+
+    Parameters
+    ----------
+    zulu_times_list : list
+        Dates and times in the format "YYYY-MM-DDTHH:MMZ"
+
+    Returns
+    ----------
+    weird_times_list : list
+        A list where every index is very roughly the number of minutes since the
+        beginning of that year. 
+    """
     # translates zulu time to weird time
     weird_times_list = []
     # for every zulu time in the list, translate to weird time
@@ -181,10 +288,10 @@ def cr2sh(date, carrington):
     carrots = np.loadtxt(
         str(os.path.dirname(os.path.realpath(__file__))) + "/carrots.txt")
     # turn input date into a mathable value
-    datemk = time.mktime(time.strptime(date, "%Y-%m-%dT%H:%M:00"))
+    datemk = mktime(time.strptime(date, "%Y-%m-%dT%H:%M:00"))
 
     # identify start and end times for the rotation
-    rotation = bisect.bisect(carrots, datemk)
+    rotation = bisect(carrots, datemk)
     start = carrots[rotation - 1]
     end = carrots[rotation]
 
@@ -203,9 +310,9 @@ def sh2cr(date, stonyhurst):
         str(os.path.dirname(os.path.realpath(__file__))) + "/carrots.txt")
 
     # re-commenting this is beneath my dignity
-    datemk = time.mktime(time.strptime(date, "%Y-%m-%dT%H:%M:00"))
+    datemk = mktime(time.strptime(date, "%Y-%m-%dT%H:%M:00"))
 
-    rotation = bisect.bisect(carrots, datemk)
+    rotation = bisect(carrots, datemk)
     start = carrots[rotation - 1]
     end = carrots[rotation]
 
