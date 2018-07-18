@@ -193,7 +193,7 @@ def z_to_weird(zulu_times_list):
     ----------
     weird_times_list : list
         A list where every index is very roughly the number of minutes since the
-        beginning of that year. 
+        beginning of that year.
     """
     # translates zulu time to weird time
     weird_times_list = []
@@ -206,6 +206,23 @@ def z_to_weird(zulu_times_list):
 
 
 def add_zulu(start_zulu, added_time):
+    """
+    Takes a date and time in Zulu format and adds a number of minutes before
+    converting back to Zulu time
+
+    Parameters
+    ----------
+    start_zulu : string
+        Starting date and time in the format "YYYY-MM-DDTHH:MMZ"
+
+    added_time : integer
+        The number of minutes you would like to add
+
+    Returns
+    ----------
+    end_zulu : string
+        Ending date and time in the format "YYYY-MM-DDTHH:MMZ"
+    """
     # Reads in the mins, hours, days, months and years from the standard Zulu time
     # format 'YYYY-MM-DDThh:mmZ'
     mins = int(start_zulu[14:16])
@@ -253,6 +270,19 @@ def funct(x, s, i):
 
 
 def cme_line_fit(ts, hs, return_slope = False):
+    """
+    Takes a date and time in Zulu format and adds a number of minutes before
+    converting back to Zulu time
+
+    Parameters
+    ----------
+    ts : list
+        Time
+    Returns
+    ----------
+    end_zulu : string
+        Ending date and time in the format "YYYY-MM-DDTHH:MMZ"
+    """
     popt,pcov = curve_fit(funct,ts,hs)
     s,i = popt[0],popt[1]
     #Maybe plot

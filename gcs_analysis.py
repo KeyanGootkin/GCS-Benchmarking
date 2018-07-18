@@ -5,6 +5,10 @@ import os
 import croissant as cr
 from glob import glob
 
+
+
+
+
 datdir = str(os.path.dirname(os.path.realpath(__file__))) + "/data"
 datafolders = glob(datdir+'/*')
 datafiles = []
