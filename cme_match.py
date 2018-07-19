@@ -22,6 +22,6 @@ def cme_match(directories):
     matches = {key: [] for key in cmes}
 
     for key in matches:
-        matches[key].append([file for file in files if search(key[-1:] + "WLRT_" + key[:9],file)])
+        matches[key].extend([file for file in files if search(key[-1:] + "WLRT_" + key[:9],file)])
  
     return matches
