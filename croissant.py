@@ -364,10 +364,10 @@ def cme_match(*directories):
     files, cmes, matches = [], [], []
 
     if len(directories) == 0:
-        files.extend(glob("data/[acjkr]data/[0-9]WLRT_[1-2]???-??-??.rt"))
+        files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/data/[acjkr]data/[0-9]WLRT_[1-2]???-??-??.rt"))
     else:
         for directory in directories:
-            files.extend(glob(directory + "/[0-9]WLRT_[1-2]???-??-??.rt"))
+            files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/" + directory + "/[0-9]WLRT_[1-2]???-??-??.rt"))
         
     for file in files:
         cmes.append(file[-19:])
