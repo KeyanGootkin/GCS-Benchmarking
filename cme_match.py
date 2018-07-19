@@ -10,10 +10,10 @@ from re import search
 def cme_match(directories):
 
     files, cmes, matches = [], [], []
-    
+
     for directory in directories:
         files.extend(glob(directory + "/[0-9]WLRT_[1-2]???-??-??.rt"))
-    
+
     for file in files:
         cmes.append(file[-13:-3] + file[-19:-18])
         cmes = list(set(cmes))
@@ -21,9 +21,7 @@ def cme_match(directories):
     cmes.sort()
 
     for cme in cmes:
-        matches.append([file for file in files if search(cme[-1:] + "WLRT_" + 
+        matches.append([file for file in files if search(cme[-1:] + "WLRT_" +
         cme[:9],file)])
-         
-    return matches
 
-print(cme_match(["data/rdata","data/cdata"]))
+    return matches
