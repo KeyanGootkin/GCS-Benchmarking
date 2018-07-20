@@ -14,18 +14,30 @@ for folder in datafolders:
     for file in glob(folder + '/*'):
         datafiles.append(file)
 
-# Crawford does some stuff that will help me get a df that just has all the measurements for one CME in one place
-all_cmes = cr.cme_match(datafolders)
+all_cmes = cr.cme_match()
+
+for cme in all_cmes:
+    one_cme = pd.DataFrame()
+    for mf in cme:
+        measurement = pd.read_csv(mf, names=["Time", "Lon", "Lat", "ROT", "Height", "Ratio", "Half Angle"],
+                                  delim_whitespace=True, header=0, usecols=[0, 1, 2, 3, 4, 5, 6])
+        measurement = cr.normalize(measurement)
+
+
 cmedf = pd.DataFrame()
 for cme in all_cmes:
     for mf in cme:
-        measurement = pd.read_csv(mf, names=["Lon", "Lat", "ROT", "Height", "Ratio", "Half Angle"],
-                                  delim_whitespace=True, header=0, usecols=[1,2,3,4,5,6])
-
-        measurement = measurement.mean()
-        measurement = pd.DataFrame({'Lon':measurement['Lon'],'Lat':measurement['Lat'],'ROT':measurement['ROT'],'Height':measurement['Height'],'Ratio':measurement['Ratio'],'Half Angle':measurement['Half Angle']}, index=[0])
-        cmedf = cmedf.append(measurement)
+        measurement = pd.read_csv(mf, names=["Time", "Lon", "Lat", "ROT", "Height", "Ratio", "Half Angle"],
+                                  delim_whitespace=True, header=0, usecols=[0, 1, 2, 3, 4, 5, 6])
+        ave_measurement = measurement.mean()
+        times_list = cr.timeshit(measurement["Time"])
+        velocity = cme_line_fit(times_list, measurement["Height"]), return_slope = True)
+        ave_measurement = pd.DataFrame({"Time":measurement["Time"][len(measurement["Time"])-1], 'Lon': ave_measurement['Lon'], 'Lat': ave_measurement['Lat'], 'ROT': ave_measurement['ROT'],
+                                    "Velocity":velocity, 'Ratio': ave_measurement['Ratio'], 'Half Angle': ave_measurement['Half Angle']}, index=[0])
+    cmedf = cmedf.append(ave_measurement)
 print(cmedf)
+
+
 '''
 eUCLID = pd.DataFrame()
 for file in datafiles:

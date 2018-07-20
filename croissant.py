@@ -368,14 +368,14 @@ def cme_match(*directories):
     else:
         for directory in directories:
             files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/" + directory + "/[0-9]WLRT_[1-2]???-??-??.rt"))
-        
+
     for file in files:
         cmes.append(file[-19:])
 
     cmes = list(set(cmes))
     cmes.sort()
-    
+
     for cme in cmes:
         matches.append([file for file in files if cme in file])
-        
+
     return matches
