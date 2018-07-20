@@ -7,12 +7,6 @@ from glob import glob
 
 
 datdir = str(os.path.dirname(os.path.realpath(__file__))) + "/data"
-datafolders = glob(datdir + '/*')
-datafiles = []
-
-for folder in datafolders:
-    for file in glob(folder + '/*'):
-        datafiles.append(file)
 
 all_cmes = cr.cme_match()
 
@@ -24,7 +18,10 @@ for cme in all_cmes:
         measurement = cr.normalize(measurement)
 
 
+
+
 cmedf = pd.DataFrame()
+all_cmesdf = pd.DataFrame()
 for cme in all_cmes:
     for mf in cme:
         measurement = pd.read_csv(mf, names=["Time", "Lon", "Lat", "ROT", "Height", "Ratio", "Half Angle"],
@@ -34,6 +31,7 @@ for cme in all_cmes:
         velocity = cme_line_fit(times_list, measurement["Height"]), return_slope = True)
         ave_measurement = pd.DataFrame({"Time":measurement["Time"][len(measurement["Time"])-1], 'Lon': ave_measurement['Lon'], 'Lat': ave_measurement['Lat'], 'ROT': ave_measurement['ROT'],
                                     "Velocity":velocity, 'Ratio': ave_measurement['Ratio'], 'Half Angle': ave_measurement['Half Angle']}, index=[0])
+        all_cmesdf = all_cmesdf.append(ave_measurement)
     cmedf = cmedf.append(ave_measurement)
 print(cmedf)
 
