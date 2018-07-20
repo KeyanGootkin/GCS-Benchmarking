@@ -319,8 +319,11 @@ def find_cme_start(start_t, start_h, velocity):
 
 
 def cr2sh(date, carrington):
+    
+    # grab dates
     carrots = np.loadtxt(
         str(os.path.dirname(os.path.realpath(__file__))) + "/carrots.txt")
+    
     # turn input date into a mathable value
     datemk = mktime(strptime(date, "%Y-%m-%dT%H:%M:00"))
 
@@ -363,19 +366,43 @@ def cme_match(*directories):
 
     files, cmes, matches = [], [], []
 
+    # if no arguments grab all files, otherwise grab specified files
     if len(directories) == 0:
         files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/data/[acjkr]data/[0-9]WLRT_[1-2]???-??-??.rt"))
     else:
         for directory in directories:
             files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/" + directory + "/[0-9]WLRT_[1-2]???-??-??.rt"))
         
+    # pull out just the filenames
     for file in files:
         cmes.append(file[-19:])
 
+    # massage this list so it's tidier
     cmes = list(set(cmes))
     cmes.sort()
     
+    # list files for each CME
     for cme in cmes:
         matches.append([file for file in files if cme in file])
         
     return matches
+
+def cme_times(*times):
+    
+    timesmk = []
+    minutes = [0]
+    
+    if len(times) <= 1:
+        return "cme_times() requires at least two values."
+    else:
+        for time in times:
+            timesmk.append(mktime(strptime(time, "%Y-%m-%dT%H:%M:00")))
+        timesmk_index = 1
+        for mk in timesmk:
+            if len(timesmk) -1 >= timesmk_index:
+                minutes.append((timesmk[timesmk_index] - mk) / 60)
+                timesmk_index += 1
+            else:
+                break
+    
+    return minutes
