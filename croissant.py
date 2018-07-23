@@ -287,6 +287,7 @@ def cme_line_fit(ts, hs, return_slope = False):
     end_zulu : string
         Ending date and time in the format "YYYY-MM-DDTHH:MMZ"
     """
+    Rsun = 695508
     popt,pcov = curve_fit(funct,ts,hs)
     s,i = popt[0],popt[1]
     #Maybe plot
@@ -303,7 +304,7 @@ def cme_line_fit(ts, hs, return_slope = False):
         plt.show()
     #Maybe return the slope
     elif return_slope == True:
-        return(s,i)
+        return(s * Rsun / 60)
 
 
 def find_cme_start(start_t, start_h, velocity):
@@ -319,11 +320,11 @@ def find_cme_start(start_t, start_h, velocity):
 
 
 def cr2sh(date, carrington):
-    
+
     # grab dates
     carrots = np.loadtxt(
         str(os.path.dirname(os.path.realpath(__file__))) + "/carrots.txt")
-    
+
     # turn input date into a mathable value
     datemk = mktime(strptime(date, "%Y-%m-%dT%H:%M:00"))
 
@@ -372,7 +373,7 @@ def cme_match(*directories):
     else:
         for directory in directories:
             files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/" + directory + "/[0-9]WLRT_[1-2]???-??-??.rt"))
-        
+
     # pull out just the filenames
     for file in files:
         cmes.append(file[-19:])
@@ -380,18 +381,18 @@ def cme_match(*directories):
     # massage this list so it's tidier
     cmes = list(set(cmes))
     cmes.sort()
-    
+
     # list files for each CME
     for cme in cmes:
         matches.append([file for file in files if cme in file])
-        
+
     return matches
 
-def cme_times(*times):
-    
+def cme_times(times):
+
     timesmk = []
     minutes = [0]
-    
+
     if len(times) <= 1:
         return "cme_times() requires at least two values."
     else:
@@ -404,5 +405,5 @@ def cme_times(*times):
                 timesmk_index += 1
             else:
                 break
-    
+
     return minutes
