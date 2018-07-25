@@ -388,6 +388,7 @@ def cme_match(*directories):
 
     return matches
 
+
 def cme_times(times):
 
     timesmk = []
