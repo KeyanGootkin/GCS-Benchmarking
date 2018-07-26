@@ -369,14 +369,14 @@ def cme_match(*directories):
 
     # if no arguments grab all files, otherwise grab specified files
     if len(directories) == 0:
-        files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/data/[acjkr]data/[0-9]WLRT_[1-2]???-??-??.rt"))
+        files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/data/[acjkr]data/[0-9]WLRT_[1-2]???-??-??_????.rt"))
     else:
         for directory in directories:
-            files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/" + directory + "/[0-9]WLRT_[1-2]???-??-??.rt"))
+            files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/" + directory + "/[0-9]WLRT_[1-2]???-??-??_????.rt"))
 
     # pull out just the filenames
     for file in files:
-        cmes.append(file[-19:])
+        cmes.append(file[-17:-7])
 
     # massage this list so it's tidier
     cmes = list(set(cmes))
