@@ -7,6 +7,7 @@ from glob import glob
 
 
 datdir = str(os.path.dirname(os.path.realpath(__file__))) + "/data"
+figdir = "C:/Users/Keyan/Desktop/Science/Data/GCS/Figures/"
 
 all_cmes = cr.cme_match()
 cmedf = pd.DataFrame()
@@ -19,8 +20,9 @@ for cme in all_cmes:
         ave_measurement = measurement.mean()
         times_list = cr.cme_times(measurement["Time"])
         velocity = cr.cme_line_fit(times_list, measurement["Height"], return_slope = True)
+        enlilstart = cr.find_cme_start(measurement["Time"][len(measurement["Time"])-1],measurement["Height"][len(measurement["Height"])-1],velocity)
         ave_measurement = pd.DataFrame({"Time":measurement["Time"][len(measurement["Time"])-1], 'Lon': cr.cr2sh(measurement["Time"][len(measurement["Time"])-1],ave_measurement['Lon']), 'Lat': ave_measurement['Lat'], 'ROT': ave_measurement['ROT'],
-                                    "Velocity":velocity, 'Ratio': ave_measurement['Ratio'], 'Half Angle': ave_measurement['Half Angle']}, index=[0])
+                                    "Velocity":velocity, 'Ratio': ave_measurement['Ratio'], 'Half Angle': ave_measurement['Half Angle'],"Time at 21.5":enlilstart[:16]+"Z"}, index=[0])
         all_cmesdf = all_cmesdf.append(ave_measurement,ignore_index=True)
     cmedf = cmedf.append(ave_measurement,ignore_index=True)
 cmedf.to_csv(str(os.path.dirname(os.path.realpath(__file__))) +'/eUCLID.txt',sep = ":")
@@ -33,23 +35,33 @@ for t in cmedf["Time"]:
 
 normarray = []
 for name in all_cmesdf.columns:
-    if all_cmesdf[name].dtypes != 'object' and name != "ROT":
-
+    if all_cmesdf[name].dtypes != 'object':
+        name_norm_array = []
         new_norm = pd.Series()
         for base_time in dates:
-            print(base_time)
             temp_storage = []
             for ind_time,x in zip(all_cmesdf["Time"],all_cmesdf[name]):
                 if base_time[:10] == ind_time[:10]:
                     temp_storage.append(x)
-            norms = (np.array(temp_storage)-np.mean(np.array(temp_storage)))/np.mean(np.array(temp_storage))
+
+            if name == "Velocity":
+                norms = ((np.array(temp_storage)-np.mean(np.array(temp_storage)))/np.mean(np.array(temp_storage)))*100
+            else:
+                norms = (np.array(temp_storage)-np.mean(np.array(temp_storage)))
+
+            for i in norms:
+                name_norm_array.append(i)
             normarray.append(norms)
             plt.hist(norms)
-            plt.title(name +' '+ base_time)
-            plt.show()
+            plt.title(name +' '+ base_time + ' std: ' + str(np.std(name_norm_array)))
+            plt.savefig(figdir + 'Individual_CMEs/' + name + "_" + base_time,overwrite=True)
+            plt.clf()
+        plt.hist(name_norm_array)
+        plt.title(name+ ' std: ' + str(np.std(name_norm_array)))
+        plt.savefig(figdir + 'Individual_Parameters/'+name,overwrite=True)
+        plt.clf()
 
     """
-
     if all_cmesdf[name].dtypes != 'object' and name == "Half Angle":
 
         new_norm = pd.Series()
@@ -70,8 +82,8 @@ for name in normarray:
 #normdf.hist()
 #plt.show()
 
-
-all_measurements=(np.array(all_measurements)*100)
+"""
+all_measurements=(np.array(all_measurements))
 plt.figure(figsize=[10,10])
 plt.hist(all_measurements,bins=30)
 plt.title("CME Measurement Distrubution", size=20, fontname='Times New Roman')
@@ -86,3 +98,4 @@ plt.savefig("C:/Users/Keyan/Desktop/cmespread.png",overwrite=True)
 
 plt.show()
 print(np.std(all_measurements))
+"""

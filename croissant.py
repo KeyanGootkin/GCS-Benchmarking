@@ -230,6 +230,7 @@ def add_zulu(start_zulu, added_time):
     # Reads in the mins, hours, days, months and years from the standard Zulu time
     # format 'YYYY-MM-DDThh:mmZ'
     mins = int(start_zulu[14:16])
+
     hours = int(start_zulu[11:13])
     days = int(start_zulu[8:10])
     month = int(start_zulu[5:7])
@@ -244,6 +245,12 @@ def add_zulu(start_zulu, added_time):
     while hours >= 24:
         days += 1
         hours -= 24
+    chars = ''
+    for i in str(mins):
+        if i == '.':
+            break
+        chars+=i
+    mins = chars
     # These many if statements just check to see if '1' needs to be '01' and whatnot
     if len(str(mins)) == 1:
         mins = "0" + str(mins)
