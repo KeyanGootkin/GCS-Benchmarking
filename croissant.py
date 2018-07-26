@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 from time import mktime, strptime
@@ -6,7 +7,6 @@ from bisect import bisect
 import os
 from re import search
 from glob import glob
-
 
 
 def v_calc(h1, h2, deltat):
@@ -249,7 +249,7 @@ def add_zulu(start_zulu, added_time):
     for i in str(mins):
         if i == '.':
             break
-        chars+=i
+        chars += i
     mins = chars
     # These many if statements just check to see if '1' needs to be '01' and whatnot
     if len(str(mins)) == 1:
@@ -280,7 +280,7 @@ def funct(x, s, i):
     return(s * x + i)
 
 
-def cme_line_fit(ts, hs, return_slope = False):
+def cme_line_fit(ts, hs, return_slope=False):
     """
     Takes a date and time in Zulu format and adds a number of minutes before
     converting back to Zulu time
@@ -295,9 +295,9 @@ def cme_line_fit(ts, hs, return_slope = False):
         Ending date and time in the format "YYYY-MM-DDTHH:MMZ"
     """
     Rsun = 695508
-    popt,pcov = curve_fit(funct,ts,hs)
-    s,i = popt[0],popt[1]
-    #Maybe plot
+    popt, pcov = curve_fit(funct, ts, hs)
+    s, i = popt[0], popt[1]
+    # Maybe plot
     if return_slope == False:
         # make x values to plot line regression against
         x = np.linspace(min(ts), max(ts), 10)
@@ -309,7 +309,7 @@ def cme_line_fit(ts, hs, return_slope = False):
         plt.title("Velocity (km/s): " + str(s * Rsun / 60))
         # Show that figure!
         plt.show()
-    #Maybe return the slope
+    # Maybe return the slope
     elif return_slope == True:
         return(s * Rsun / 60)
 
@@ -376,10 +376,12 @@ def cme_match(*directories):
 
     # if no arguments grab all files, otherwise grab specified files
     if len(directories) == 0:
-        files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/data/[acjkr]data/[0-9]WLRT_[1-2]???-??-??_????.rt"))
+        files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) +
+                          "/data/[acjkr]data/[0-9]WLRT_[1-2]???-??-??_????.rt"))
     else:
         for directory in directories:
-            files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/" + directory + "/[0-9]WLRT_[1-2]???-??-??_????.rt"))
+            files.extend(glob(str(os.path.dirname(os.path.realpath(
+                __file__))) + "/" + directory + "/[0-9]WLRT_[1-2]???-??-??_????.rt"))
 
     # pull out just the filenames
     for file in files:
@@ -408,10 +410,50 @@ def cme_times(times):
             timesmk.append(mktime(strptime(time, "%Y-%m-%dT%H:%M:00")))
         timesmk_index = 1
         for mk in timesmk:
-            if len(timesmk) -1 >= timesmk_index:
+            if len(timesmk) - 1 >= timesmk_index:
                 minutes.append((timesmk[timesmk_index] - mk) / 60)
                 timesmk_index += 1
             else:
                 break
 
     return minutes
+
+
+def make_eUCLID(cmes_list):
+
+    # Create empty dataframes to populate later
+    cmedf = pd.DataFrame()
+    all_cmesdf = pd.DataFrame()
+    # Loop through each cme in the list of cmes
+    for cme in cmes_list:
+        # loop through each measurement of the cme
+        for mf in cme:
+            tempdf = pd.DataFrame()
+            # Read the measurement into a dataframe
+            measurement = pd.read_csv(mf, names=["Time", "Lon", "Lat", "ROT", "Height", "Ratio", "Half Angle"],
+                                      delim_whitespace=True, header=0, usecols=[0, 1, 2, 3, 4, 5, 6])
+            # find the average of each parameter in one measurement
+            ave_measurement = measurement.mean()
+            # Turn zulu into mathable times
+            times_list = cme_times(measurement["Time"])
+            # calculate velocity
+            velocity = cme_line_fit(
+                times_list, measurement["Height"], return_slope=True)
+            # Use velocity to calculate the time at 21.5 Rs
+            enlilstart = find_cme_start(measurement["Time"][len(
+                measurement["Time"]) - 1], measurement["Height"][len(measurement["Height"]) - 1], velocity)
+            # turn the averages into a dataframe so that it can easily be appended
+            ave_measurement = pd.DataFrame({"Time": measurement["Time"][len(measurement["Time"]) - 1], 'Lon': cr2sh(measurement["Time"][len(measurement["Time"]) - 1], ave_measurement['Lon']), 'Lat': ave_measurement['Lat'], 'ROT': ave_measurement['ROT'],
+                                            "Velocity": velocity, 'Ratio': ave_measurement['Ratio'], 'Half Angle': ave_measurement['Half Angle'], "Time at 21.5": enlilstart[:16] + "Z"}, index=[0])
+            # add this measurement to the df containing all individual measurements
+            all_cmesdf = all_cmesdf.append(ave_measurement, ignore_index=True)
+            tempdf = tempdf.append(ave_measurement, ignore_index=True)
+            ave_of_temp = tempdf.mean()
+
+            transferdf = pd.DataFrame({"Time": ave_measurement["Time"], 'Lon': ave_of_temp["Lon"], 'Lat': ave_of_temp['Lat'], 'ROT': ave_of_temp['ROT'],
+                                       "Velocity": ave_of_temp["Velocity"], 'Ratio': ave_of_temp['Ratio'], 'Half Angle': ave_of_temp['Half Angle'], "Time at 21.5": find_cme_start(tempdf["Time"][len(tempdf["Time"]) - 1], measurement["Height"][len(measurement["Height"]) - 1], ave_of_temp["Velocity"])}, index=[0])
+        
+        cmedf = cmedf.append(transferdf, ignore_index=True)
+    cmedf.to_csv(str(os.path.dirname(os.path.realpath(__file__))
+                     ) + '/eUCLID.txt', sep=":")
+    return(all_cmesdf, cmedf)
