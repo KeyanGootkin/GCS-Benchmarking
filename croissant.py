@@ -230,6 +230,7 @@ def add_zulu(start_zulu, added_time):
     # Reads in the mins, hours, days, months and years from the standard Zulu time
     # format 'YYYY-MM-DDThh:mmZ'
     mins = int(start_zulu[14:16])
+
     hours = int(start_zulu[11:13])
     days = int(start_zulu[8:10])
     month = int(start_zulu[5:7])
@@ -244,6 +245,12 @@ def add_zulu(start_zulu, added_time):
     while hours >= 24:
         days += 1
         hours -= 24
+    chars = ''
+    for i in str(mins):
+        if i == '.':
+            break
+        chars+=i
+    mins = chars
     # These many if statements just check to see if '1' needs to be '01' and whatnot
     if len(str(mins)) == 1:
         mins = "0" + str(mins)
@@ -369,14 +376,14 @@ def cme_match(*directories):
 
     # if no arguments grab all files, otherwise grab specified files
     if len(directories) == 0:
-        files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/data/[acjkr]data/[0-9]WLRT_[1-2]???-??-??.rt"))
+        files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/data/[acjkr]data/[0-9]WLRT_[1-2]???-??-??_????.rt"))
     else:
         for directory in directories:
-            files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/" + directory + "/[0-9]WLRT_[1-2]???-??-??.rt"))
+            files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) + "/" + directory + "/[0-9]WLRT_[1-2]???-??-??_????.rt"))
 
     # pull out just the filenames
     for file in files:
-        cmes.append(file[-19:])
+        cmes.append(file[-17:-7])
 
     # massage this list so it's tidier
     cmes = list(set(cmes))
