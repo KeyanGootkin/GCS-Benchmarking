@@ -411,7 +411,8 @@ def cme_times(times):
         timesmk_index = 1
         for mk in timesmk:
             if len(timesmk) - 1 >= timesmk_index:
-                minutes.append(((timesmk[timesmk_index] - mk) / 60)+minutes[len(minutes)-1])
+                minutes.append(
+                    ((timesmk[timesmk_index] - mk) / 60) + minutes[len(minutes) - 1])
                 timesmk_index += 1
             else:
                 break
@@ -457,5 +458,41 @@ def make_eUCLID(cmes_list):
     cmedf.to_csv(str(os.path.dirname(os.path.realpath(__file__))
                      ) + '/eUCLID.txt', sep=":")
     all_cmesdf.to_csv(str(os.path.dirname(os.path.realpath(__file__))
-                     ) + '/all_measurements.txt', sep=":")
+                          ) + '/all_measurements.txt', sep=":")
     return(all_cmesdf, cmedf)
+
+
+def make_hist(std_list, range_list,name,units,figdir):
+
+    b = np.linspace(0,max(range_list),30)
+    plt.hist(std_list, bins=b, alpha=0.5, label='Standard Deviation')
+    plt.hist(range_list, bins=30, alpha=0.5, label='Range')
+    plt.title("Standard Deviation and Range of " +
+              name, size=20, fontname='Verdana')
+    plt.xlabel("Standard Deviation " + units[name],size=16, fontname='Verdana')
+    plt.ylabel("Frequency",size=16, fontname='Verdana')
+    plt.xticks(fontsize=15, fontname='Verdana')
+    plt.yticks(fontsize=15, fontname='Verdana')
+    plt.legend(loc='best')
+    plt.savefig(figdir + "std_range_hists/" +
+                name + "_hist.png", overwrite=True)
+    plt.clf()
+
+def make_scatter(std_list,range_list,mean_list,name,units,figdir):
+    plt.scatter(mean_list,std_list)
+    plt.title("Mean vs. Standard Deviation of "+name, size=20,fontname='Verdana')
+    plt.xlabel("Mean "+units[name],size=16, fontname='Verdana')
+    plt.ylabel("Standard Deviation "+units[name],size=16, fontname='Verdana')
+    plt.xticks(fontsize=15, fontname='Verdana')
+    plt.yticks(fontsize=15, fontname='Verdana')
+    plt.savefig(figdir+"std_range_scatters/std_"+name+"_scatter.png",overwrite=True)
+    plt.clf()
+
+    plt.scatter(mean_list,range_list)
+    plt.xlabel("Mean "+units[name],size=16, fontname='Verdana')
+    plt.ylabel("Range "+units[name],size=16, fontname='Verdana')
+    plt.xticks(fontsize=15, fontname='Verdana')
+    plt.yticks(fontsize=15, fontname='Verdana')
+    plt.title("Range of "+name, size=20,fontname='Verdana')
+    plt.savefig(figdir+"std_range_scatters/range_"+name+"_scatter.png",overwrite=True)
+    plt.clf()
