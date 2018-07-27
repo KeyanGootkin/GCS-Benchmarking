@@ -10,22 +10,9 @@ datdir = str(os.path.dirname(os.path.realpath(__file__))) + "/data"
 figdir = "C:/Users/Keyan/Desktop/Science/Data/GCS/Figures/"
 
 all_cmes = cr.cme_match()
-cmedf = pd.DataFrame()
-all_cmesdf = pd.DataFrame()
-print(all_cmes)
-for cme in all_cmes:
-    for mf in cme:
-        measurement = pd.read_csv(mf, names=["Time", "Lon", "Lat", "ROT", "Height", "Ratio", "Half Angle"],
-                                  delim_whitespace=True, header=0, usecols=[0, 1, 2, 3, 4, 5, 6])
-        ave_measurement = measurement.mean()
-        times_list = cr.cme_times(measurement["Time"])
-        velocity = cr.cme_line_fit(times_list, measurement["Height"], return_slope = True)
-        enlilstart = cr.find_cme_start(measurement["Time"][len(measurement["Time"])-1],measurement["Height"][len(measurement["Height"])-1],velocity)
-        ave_measurement = pd.DataFrame({"Time":measurement["Time"][len(measurement["Time"])-1], 'Lon': cr.cr2sh(measurement["Time"][len(measurement["Time"])-1],ave_measurement['Lon']), 'Lat': ave_measurement['Lat'], 'ROT': ave_measurement['ROT'],
-                                    "Velocity":velocity, 'Ratio': ave_measurement['Ratio'], 'Half Angle': ave_measurement['Half Angle'],"Time at 21.5":enlilstart[:16]+"Z"}, index=[0])
-        all_cmesdf = all_cmesdf.append(ave_measurement,ignore_index=True)
-    cmedf = cmedf.append(ave_measurement,ignore_index=True)
-cmedf.to_csv(str(os.path.dirname(os.path.realpath(__file__))) +'/eUCLID.txt',sep = ":")
+
+all_cmesdf,cmedf = cr.make_eUCLID(all_cmes)
+
 print(all_cmesdf)
 print(cmedf)
 
