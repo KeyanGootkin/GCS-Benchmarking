@@ -13,16 +13,16 @@ all_cmes = cr.cme_match()
 
 all_cmesdf,cmedf = cr.make_eUCLID(all_cmes)
 
-print(all_cmesdf)
-print(cmedf)
 
 dates = []
 for t in cmedf["Time"]:
     dates.append(t[:10])
-
+units = {"Lon":"(Degrees)","Lat":"(Degrees)","ROT":"(Degrees)","Half Angle":"(Degrees)","Ratio":'',"Velocity":"(km/s)"}
 normarray = []
 for name in all_cmesdf.columns:
     if all_cmesdf[name].dtypes != 'object':
+        mean_list,std_list,range_list = [],[],[]
+
         name_norm_array = []
         new_norm = pd.Series()
         for base_time in dates:
@@ -30,6 +30,12 @@ for name in all_cmesdf.columns:
             for ind_time,x in zip(all_cmesdf["Time"],all_cmesdf[name]):
                 if base_time[:10] == ind_time[:10]:
                     temp_storage.append(x)
+            mean_p = np.mean(temp_storage)
+            mean_list.append(mean_p)
+            std_p = np.std(temp_storage)
+            std_list.append(std_p)
+            range_p = max(temp_storage)-min(temp_storage)
+            range_list.append(range_p)
 
             if name == "Velocity":
                 norms = ((np.array(temp_storage)-np.mean(np.array(temp_storage)))/np.mean(np.array(temp_storage)))*100
@@ -39,14 +45,39 @@ for name in all_cmesdf.columns:
             for i in norms:
                 name_norm_array.append(i)
             normarray.append(norms)
-            plt.hist(norms)
-            plt.title(name +' '+ base_time + ' std: ' + str(np.std(name_norm_array)))
-            plt.savefig(figdir + 'Individual_CMEs/' + name + "_" + base_time,overwrite=True)
-            plt.clf()
-        plt.hist(name_norm_array)
+
+
+        plt.hist(std_list)
+        plt.title("std "+name)
+        plt.xlabel("Standard Deviation "+units[name])
+        plt.ylabel("Frequency")
+        plt.savefig(figdir+"std_range_hists/std_"+name+"_hist.png",overwrite=True)
+        plt.clf()
+        plt.hist(range_list)
+        plt.title("range "+name)
+        plt.xlabel("Range "+units[name])
+        plt.ylabel("Frequency")
+        plt.savefig(figdir+"std_range_hists/range_"+name+"_hist.png",overwrite=True)
+        plt.clf()
+
+        plt.scatter(mean_list,std_list)
+        plt.title("std "+name)
+        plt.xlabel("Mean "+units[name])
+        plt.ylabel("Standard Deviation "+units[name])
+        plt.savefig(figdir+"std_range_scatters/std_"+name+"_scatter.png",overwrite=True)
+        plt.clf()
+        plt.scatter(mean_list,range_list)
+        plt.xlabel("Mean "+units[name])
+        plt.ylabel("Range "+units[name])
+        plt.title("range "+name)
+        plt.savefig(figdir+"std_range_scatters/range_"+name+"_scatter.png",overwrite=True)
+
+        plt.clf()
+
+        """plt.hist(name_norm_array)
         plt.title(name+ ' std: ' + str(np.std(name_norm_array)))
         plt.savefig(figdir + 'Individual_Parameters/'+name,overwrite=True)
-        plt.clf()
+        plt.clf()"""
 
     """
     if all_cmesdf[name].dtypes != 'object' and name == "Half Angle":

@@ -306,7 +306,7 @@ def cme_line_fit(ts, hs, return_slope=False):
         # line plot the line of best fit
         plt.plot(x, (s * x + i), 'r')
         # put the slope (velocity) in the title
-        plt.title("Velocity (km/s): " + str(s * Rsun / 60))
+        plt.title("Velocity (km/s): " + str(g))
         # Show that figure!
         plt.show()
     # Maybe return the slope
@@ -411,7 +411,7 @@ def cme_times(times):
         timesmk_index = 1
         for mk in timesmk:
             if len(timesmk) - 1 >= timesmk_index:
-                minutes.append((timesmk[timesmk_index] - mk) / 60)
+                minutes.append(((timesmk[timesmk_index] - mk) / 60)+minutes[len(minutes)-1])
                 timesmk_index += 1
             else:
                 break
@@ -452,8 +452,10 @@ def make_eUCLID(cmes_list):
 
             transferdf = pd.DataFrame({"Time": ave_measurement["Time"], 'Lon': ave_of_temp["Lon"], 'Lat': ave_of_temp['Lat'], 'ROT': ave_of_temp['ROT'],
                                        "Velocity": ave_of_temp["Velocity"], 'Ratio': ave_of_temp['Ratio'], 'Half Angle': ave_of_temp['Half Angle'], "Time at 21.5": find_cme_start(tempdf["Time"][len(tempdf["Time"]) - 1], measurement["Height"][len(measurement["Height"]) - 1], ave_of_temp["Velocity"])}, index=[0])
-        
+
         cmedf = cmedf.append(transferdf, ignore_index=True)
     cmedf.to_csv(str(os.path.dirname(os.path.realpath(__file__))
                      ) + '/eUCLID.txt', sep=":")
+    all_cmesdf.to_csv(str(os.path.dirname(os.path.realpath(__file__))
+                     ) + '/all_measurements.txt', sep=":")
     return(all_cmesdf, cmedf)
