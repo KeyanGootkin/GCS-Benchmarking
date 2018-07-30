@@ -428,8 +428,9 @@ def make_eUCLID(cmes_list):
     # Loop through each cme in the list of cmes
     for cme in cmes_list:
         # loop through each measurement of the cme
+        tempdf = pd.DataFrame()
         for mf in cme:
-            tempdf = pd.DataFrame()
+            
             # Read the measurement into a dataframe
             measurement = pd.read_csv(mf, names=["Time", "Lon", "Lat", "ROT", "Height", "Ratio", "Half Angle"],
                                       delim_whitespace=True, header=0, usecols=[0, 1, 2, 3, 4, 5, 6])
@@ -465,15 +466,16 @@ def make_eUCLID(cmes_list):
 def make_hist(std_list, range_list,name,units,figdir):
 
     b = np.linspace(0,max(range_list),30)
-    plt.hist(std_list, bins=b, alpha=0.5, label='Standard Deviation')
-    plt.hist(range_list, bins=30, alpha=0.5, label='Range')
+    plt.hist(std_list, bins=b, alpha=0.75, label='Standard Deviation', color = "#FFCD8C")
+    plt.hist(range_list, bins=30, alpha=0.75, label='Range', color = '#74A7C4')
     plt.title("Standard Deviation and Range of " +
-              name, size=20, fontname='Verdana')
-    plt.xlabel("Standard Deviation " + units[name],size=16, fontname='Verdana')
+              name, size=18, fontname='Verdana')
+    plt.xlabel(units[name],size=16, fontname='Verdana')
     plt.ylabel("Frequency",size=16, fontname='Verdana')
     plt.xticks(fontsize=15, fontname='Verdana')
     plt.yticks(fontsize=15, fontname='Verdana')
     plt.legend(loc='best')
+    plt.tight_layout()
     plt.savefig(figdir + "std_range_hists/" +
                 name + "_hist.png", overwrite=True)
     plt.clf()
@@ -485,6 +487,7 @@ def make_scatter(std_list,range_list,mean_list,name,units,figdir):
     plt.ylabel("Standard Deviation "+units[name],size=16, fontname='Verdana')
     plt.xticks(fontsize=15, fontname='Verdana')
     plt.yticks(fontsize=15, fontname='Verdana')
+    plt.tight_layout()
     plt.savefig(figdir+"std_range_scatters/std_"+name+"_scatter.png",overwrite=True)
     plt.clf()
 
@@ -494,5 +497,6 @@ def make_scatter(std_list,range_list,mean_list,name,units,figdir):
     plt.xticks(fontsize=15, fontname='Verdana')
     plt.yticks(fontsize=15, fontname='Verdana')
     plt.title("Range of "+name, size=20,fontname='Verdana')
+    plt.tight_layout()
     plt.savefig(figdir+"std_range_scatters/range_"+name+"_scatter.png",overwrite=True)
     plt.clf()
