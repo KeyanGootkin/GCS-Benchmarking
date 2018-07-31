@@ -430,7 +430,7 @@ def make_eUCLID(cmes_list):
         # loop through each measurement of the cme
         tempdf = pd.DataFrame()
         for mf in cme:
-            
+
             # Read the measurement into a dataframe
             measurement = pd.read_csv(mf, names=["Time", "Lon", "Lat", "ROT", "Height", "Ratio", "Half Angle"],
                                       delim_whitespace=True, header=0, usecols=[0, 1, 2, 3, 4, 5, 6])
@@ -463,40 +463,55 @@ def make_eUCLID(cmes_list):
     return(all_cmesdf, cmedf)
 
 
-def make_hist(std_list, range_list,name,units,figdir):
+def make_hist(std_list, range_list,name,units,figdir,labels):
 
-    b = np.linspace(0,max(range_list),30)
-    plt.hist(std_list, bins=b, alpha=0.75, label='Standard Deviation', color = "#FFCD8C")
-    plt.hist(range_list, bins=30, alpha=0.75, label='Range', color = '#74A7C4')
+    if labels[name] == "Tilt Angle":
+        b = np.arange(0,max(range_list)+20,20)
+
+    elif labels[name] == "Half Angle":
+        b = np.arange(0,max(range_list)+5,5)
+
+    elif units[name] == "(Degrees)":
+        #b = int(max(range_list)/2)
+        b = np.arange(0,max(range_list)+1,2)
+
+    elif units[name] == '':
+        #b = int(max(range_list)/0.1)
+        b = np.arange(0,max(range_list)+0.1,0.1)
+    else:
+        b = np.arange(0,max(range_list)+50,50)
+    plt.hist(std_list, bins=b, alpha=0.5, label='Standard Deviation', color = "#FFCD8C")
+    plt.hist(range_list, bins=b, alpha=0.3, label='Range', color = '#74A7C4')
     plt.title("Standard Deviation and Range of " +
-              name, size=18, fontname='Verdana')
-    plt.xlabel(units[name],size=16, fontname='Verdana')
-    plt.ylabel("Frequency",size=16, fontname='Verdana')
+              labels[name], size=18, fontname='Verdana')
+    plt.xlabel(units[name],size=14, fontname='Verdana')
+    plt.ylabel("Frequency",size=14, fontname='Verdana')
     plt.xticks(fontsize=15, fontname='Verdana')
     plt.yticks(fontsize=15, fontname='Verdana')
     plt.legend(loc='best')
-    plt.tight_layout()
     plt.savefig(figdir + "std_range_hists/" +
-                name + "_hist.png", overwrite=True)
+                name + "_hist.png", overwrite=True,dpi=500)
     plt.clf()
 
-def make_scatter(std_list,range_list,mean_list,name,units,figdir):
-    plt.scatter(mean_list,std_list)
-    plt.title("Mean vs. Standard Deviation of "+name, size=20,fontname='Verdana')
-    plt.xlabel("Mean "+units[name],size=16, fontname='Verdana')
-    plt.ylabel("Standard Deviation "+units[name],size=16, fontname='Verdana')
+def make_scatter(std_list,range_list,mean_list,name,units,figdir,labels):
+    plt.scatter(mean_list,std_list,color = '#2F454F',label = "Standard Deviation")
+    """plt.title("Mean vs. Standard Deviation of "+labels[name], size=20,fontname='Verdana')
+    plt.xlabel("Mean "+units[name],size=14, fontname='Verdana')
+    plt.ylabel("Standard Deviation "+units[name],size=14, fontname='Verdana')
     plt.xticks(fontsize=15, fontname='Verdana')
     plt.yticks(fontsize=15, fontname='Verdana')
     plt.tight_layout()
     plt.savefig(figdir+"std_range_scatters/std_"+name+"_scatter.png",overwrite=True)
-    plt.clf()
+    plt.clf()"""
 
-    plt.scatter(mean_list,range_list)
-    plt.xlabel("Mean "+units[name],size=16, fontname='Verdana')
-    plt.ylabel("Range "+units[name],size=16, fontname='Verdana')
+    plt.scatter(mean_list,range_list, color ="#F7941D",label="Range")
+    if name == 'Half Angle':
+        plt.xlim(8,39)
+    plt.xlabel("Mean "+units[name],size=14, fontname='Verdana')
+    plt.ylabel(units[name],size=14, fontname='Verdana')
     plt.xticks(fontsize=15, fontname='Verdana')
     plt.yticks(fontsize=15, fontname='Verdana')
-    plt.title("Range of "+name, size=20,fontname='Verdana')
-    plt.tight_layout()
-    plt.savefig(figdir+"std_range_scatters/range_"+name+"_scatter.png",overwrite=True)
+    plt.title("Standard Deviation and Range of "+labels[name], size=18,fontname='Verdana')
+    plt.legend(loc=1)
+    plt.savefig(figdir+"std_range_scatters/range_"+name+"_scatter.png",overwrite=True,dpi=500)
     plt.clf()

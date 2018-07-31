@@ -17,8 +17,8 @@ for t in cmedf["Time"]:
     dates.append(t[:10])
 units = {"Lon": "(Degrees)", "Lat": "(Degrees)", "ROT": "(Degrees)",
          "Half Angle": "(Degrees)", "Ratio": '', "Velocity": "(km/s)"}
-labels = {"Lon": "(Degrees)", "Lat": "(Degrees)", "ROT": "(Degrees)",
-         "Half Angle": "(Degrees)", "Ratio": '', "Velocity": "(km/s)"}
+labels = {"Lon": "Longitude", "Lat": "Latitude", "ROT": "Tilt Angle",
+         "Half Angle": "Half Angle", "Ratio": 'Aspect Ratio', "Velocity": "Velocity"}
 normarray = []
 
 for name in all_cmesdf.columns:
@@ -50,5 +50,5 @@ for name in all_cmesdf.columns:
                 name_norm_array.append(i)
             normarray.append(norms)
 
-        cr.make_hist(std_list, range_list, name, units, figdir)
-        cr.make_scatter(std_list, range_list, mean_list, name, units, figdir)
+        cr.make_hist(std_list, range_list, name, units, figdir, labels)
+        cr.make_scatter(std_list, range_list, mean_list, name, units, figdir, labels)
