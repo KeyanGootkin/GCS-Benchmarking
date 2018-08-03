@@ -327,6 +327,23 @@ def find_cme_start(start_t, start_h, velocity):
 
 
 def cr2sh(date, carrington):
+    
+    """
+    Takes a date and Carrington longitude and returns a Stonyhurst longitude.
+
+    Parameters
+    ----------
+    date : string
+        Date and time in the format "YYYY-MM-DDTHH:MM:00"
+
+    carrington : float
+        Carrington longitude.
+
+    Returns
+    ----------
+    stonyhurst : float
+        Stonyhurst longitude.
+    """
 
     # grab dates
     carrots = np.loadtxt(
@@ -351,6 +368,23 @@ def cr2sh(date, carrington):
 
 
 def sh2cr(date, stonyhurst):
+    """
+    Takes a date and Stonyhurst longitude and returns a Carrington longitude.
+
+    Parameters
+    ----------
+    date : string
+        Date and time in the format "YYYY-MM-DDTHH:MM:00"
+
+    carrington : float
+        Stonyhurst longitude.
+
+    Returns
+    ----------
+    carrington : float
+        Carrington longitude.
+    """
+    
     carrots = np.loadtxt(
         str(os.path.dirname(os.path.realpath(__file__))) + "/carrots.txt")
 
@@ -371,6 +405,22 @@ def sh2cr(date, stonyhurst):
 
 
 def cme_match(*directories):
+    
+    """
+    Looks at all .rt files in the given directory or directories and groups 
+    them up by CME. 
+    
+    Parameters
+    ----------
+    directories : string
+        0 or more directory names. If 0, cme_match() finds all appropriately 
+        named .rt files in /data/[acjkr]data/.
+
+    Returns
+    ----------
+    matches : list
+        List of lists of filenames.
+    """
 
     files, cmes, matches = [], [], []
 
@@ -399,7 +449,20 @@ def cme_match(*directories):
 
 
 def cme_times(times):
+    """
+    Takes a list of frame timestamps and returns minutes from zero, where zero 
+    is the earliest timstamp.
+    
+    Parameters
+    ----------
+    times : list
+        2 or more timestamps in the format YYYY-MM-DDTHH:MM:00.
 
+    Returns
+    ----------
+    minutes : list
+        Minutes from zero.
+    """
     timesmk = []
     minutes = [0]
 
