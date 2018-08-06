@@ -31,6 +31,12 @@ List of Carrington rotation start times, in seconds since the beginning of the u
 A series of folders containing GCS output files. gcs_analysis.py draws from these folders to create eUCLID.
 
 
+## Usage
+
+### Model Validation
+
+
+### CME Measurement
 
 ## Authors
 
@@ -44,7 +50,9 @@ Please send any questions or comments regarding the code here to Keyan Gootkin.
 
 * Austin Skipper - skippera22@mail.wlu.edu
 
-Distributed under the XYZ license. See ``LICENSE`` for more information.
+
+
+Distributed under the MIT license. See ``LICENSE.txt`` for more information.
 
 
 <!-- Markdown link & img dfn's -->
