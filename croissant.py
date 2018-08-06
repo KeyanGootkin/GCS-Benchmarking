@@ -230,7 +230,6 @@ def add_zulu(start_zulu, added_time):
     # Reads in the mins, hours, days, months and years from the standard Zulu time
     # format 'YYYY-MM-DDThh:mmZ'
     mins = int(start_zulu[14:16])
-
     hours = int(start_zulu[11:13])
     days = int(start_zulu[8:10])
     month = int(start_zulu[5:7])
@@ -372,18 +371,14 @@ def cr2sh(date, carrington):
     # grab dates
     carrots = np.loadtxt(
         str(os.path.dirname(os.path.realpath(__file__))) + "/carrots.txt")
-
     # turn input date into a mathable value
     datemk = mktime(strptime(date, "%Y-%m-%dT%H:%M:00"))
-
     # identify start and end times for the rotation
     rotation = bisect(carrots, datemk)
     start = carrots[rotation - 1]
     end = carrots[rotation]
-
     # the math part
     stonyhurst = carrington - 360 * (1 - (datemk - start) / (end - start))
-
     # make sure results are in bounds
     if stonyhurst < 0:
         return stonyhurst + 360
@@ -411,17 +406,13 @@ def sh2cr(date, stonyhurst):
     """
     carrots = np.loadtxt(
         str(os.path.dirname(os.path.realpath(__file__))) + "/carrots.txt")
-
     # re-commenting this is beneath my dignity
     datemk = mktime(strptime(date, "%Y-%m-%dT%H:%M:00"))
-
     rotation = bisect(carrots, datemk)
     start = carrots[rotation - 1]
     end = carrots[rotation]
-
     # note plus sign
     carrington = stonyhurst + 360 * (1 - (datemk - start) / (end - start))
-
     if carrington > 360:
         return carrington - 360
     else:
@@ -480,6 +471,11 @@ def cme_times(times):
 
 def make_eUCLID(cmes_list):
     """
+    Takes a list of GCS CME output file paths, averages all of the measurements
+    of the same CME and outputs a dataframe containing average time, longitude,
+    latitude, tilt angle, velocity, ascpect ratio, half angle, and time at 21.5
+    solar radii for each CME.
+
     Parameters
     ----------
     cmes_list : list or array
@@ -562,7 +558,6 @@ def make_hist(std_list, range_list, name, units, figdir, labels):
         proper name of the parameter which you would like to appear on the
         final histograms.
     """
-
     if labels[name] == "Tilt Angle":
         b = np.arange(0, max(range_list) + 20, 20)
 
@@ -673,7 +668,6 @@ def plot_cmes(cmedf, all_cmesdf, dates, units, labels, figdir):
     for name in all_cmesdf.columns:
         if all_cmesdf[name].dtypes != 'object':
             mean_list, std_list, range_list = [], [], []
-
             name_norm_array = []
             new_norm = pd.Series()
             for base_time in dates:
@@ -681,27 +675,22 @@ def plot_cmes(cmedf, all_cmesdf, dates, units, labels, figdir):
                 for ind_time, x in zip(all_cmesdf["Time"], all_cmesdf[name]):
                     if base_time[:10] == ind_time[:10]:
                         temp_storage.append(x)
-
-
                 mean_p = np.mean(temp_storage)
                 mean_list.append(mean_p)
                 std_p = np.std(temp_storage)
                 std_list.append(std_p)
                 range_p = max(temp_storage) - min(temp_storage)
                 range_list.append(range_p)
-
                 if name == "Velocity":
                     norms = ((np.array(temp_storage) - np.mean(np.array(temp_storage))
                               ) / np.mean(np.array(temp_storage))) * 100
                 else:
                     norms = (np.array(temp_storage) -
                              np.mean(np.array(temp_storage)))
-
                 for i in norms:
                     name_norm_array.append(i)
                 normarray.append(norms)
-
             make_hist(std_list, range_list, name, units, figdir, labels)
             if name == "Velocity" or name == "Half Angle":
                 make_scatter(std_list, range_list, mean_list,
-                            name, units, figdir, labels)
+                             name, units, figdir, labels)
