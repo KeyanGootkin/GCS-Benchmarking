@@ -34,11 +34,15 @@ A series of folders containing GCS output files. gcs_analysis.py draws from thes
 
 ## Authors
 
-* Keyan Gootkin – Keyan.Gootkin@NASA.gov or goot1024@uw.edu – [@KeyanGootkin](https://twitter.com/KeyanGootkin) 
+Please send any questions or comments regarding the code here to Keyan Gootkin.
+
+* Keyan Gootkin – Keyan.Gootkin@NASA.gov or goot1024@uw.edu – Twitter: [@KeyanGootkin](https://twitter.com/KeyanGootkin) 
 
 * M. Crawford - M.Crawford.Velez@gmail.com
 
 * Rachel Broemmelsiek - rbroemme@terpmail.umd.edu
+
+* Austin Skipper - skippera22@mail.wlu.edu
 
 Distributed under the XYZ license. See ``LICENSE`` for more information.
 
