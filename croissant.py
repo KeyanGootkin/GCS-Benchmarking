@@ -315,6 +315,32 @@ def cme_line_fit(ts, hs, return_slope=False):
 
 
 def find_cme_start(start_t, start_h, velocity):
+    """
+    Takes measurements of a CME from coronagraph imagery and calculates when the
+    CME will reach 21.5 solar radii, where the ENLIL model takes over.
+
+    Parameters
+    ----------
+    start_t : string
+        Starting date and time from which you would like to calculate the CMEs
+        time at 21.5 solar radii, in the format "YYYY-MM-DDTHH:MMZ". Note that
+        this time must match with the start_h below. It is advised that this
+        starting time be as late as possible so that errors introduced by the
+        calculated velocity are minimized.
+
+    start_h : float or int
+        Starting CME height in solar radii from which you would like to calculate
+        the CMEs time at 21.5 solar radii. note that this height must match the
+        starting time listed above.
+
+    velocity : float or int
+        Velocity of the CME in solar radii per minute.
+
+    Returns
+    ----------
+    end_time : string
+        CMEs arrival at 21.5 solar radii in the format "YYYY-MM-DDTHH:MMZ"
+    """
     # Convert velocity from km/s to Rsun/min
     velocity = (velocity / 695508) * 60
     # Calculate number of minutes until CME reaches ENLIL inner boundary assuming
@@ -327,7 +353,41 @@ def find_cme_start(start_t, start_h, velocity):
 
 
 def cr2sh(date, carrington):
+<<<<<<< HEAD
+    
+    """
+    Takes a date and Carrington longitude and returns a Stonyhurst longitude.
+=======
+    """
+    Converts carrington to stonyhurst
+>>>>>>> 87858699faa1cb07e40b4ca32a770a46e4b425ab
 
+    Parameters
+    ----------
+    date : string
+<<<<<<< HEAD
+        Date and time in the format "YYYY-MM-DDTHH:MM:00"
+
+    carrington : float
+        Carrington longitude.
+
+    Returns
+    ----------
+    stonyhurst : float
+        Stonyhurst longitude.
+    """
+=======
+        The date of the longitude measurement in the format "YYYY-MM-DDTHH:MMZ"
+>>>>>>> 87858699faa1cb07e40b4ca32a770a46e4b425ab
+
+    carrington : float
+        Longitude in carrington coordinates.
+
+    Returns
+    ----------
+    stonyhurst : float
+        Longitude in stonyhurst coordinates.
+    """
     # grab dates
     carrots = np.loadtxt(
         str(os.path.dirname(os.path.realpath(__file__))) + "/carrots.txt")
@@ -351,6 +411,41 @@ def cr2sh(date, carrington):
 
 
 def sh2cr(date, stonyhurst):
+    """
+<<<<<<< HEAD
+    Takes a date and Stonyhurst longitude and returns a Carrington longitude.
+=======
+    Converts stonyhurst to carrington
+>>>>>>> 87858699faa1cb07e40b4ca32a770a46e4b425ab
+
+    Parameters
+    ----------
+    date : string
+<<<<<<< HEAD
+        Date and time in the format "YYYY-MM-DDTHH:MM:00"
+
+    carrington : float
+        Stonyhurst longitude.
+
+    Returns
+    ----------
+    carrington : float
+        Carrington longitude.
+    """
+    
+=======
+        The date of the longitude measurement in the format "YYYY-MM-DDTHH:MMZ"
+
+    stonyhurst : float
+        Longitude in stonyhurst coordinates.
+
+    Returns
+    ----------
+
+    carrington : float
+        Longitude in carrington coordinates.
+    """
+>>>>>>> 87858699faa1cb07e40b4ca32a770a46e4b425ab
     carrots = np.loadtxt(
         str(os.path.dirname(os.path.realpath(__file__))) + "/carrots.txt")
 
@@ -371,6 +466,22 @@ def sh2cr(date, stonyhurst):
 
 
 def cme_match(*directories):
+    
+    """
+    Looks at all .rt files in the given directory or directories and groups 
+    them up by CME. 
+    
+    Parameters
+    ----------
+    directories : string
+        0 or more directory names. If 0, cme_match() finds all appropriately 
+        named .rt files in /data/[acjkr]data/.
+
+    Returns
+    ----------
+    matches : list
+        List of lists of filenames.
+    """
 
     files, cmes, matches = [], [], []
 
@@ -399,7 +510,20 @@ def cme_match(*directories):
 
 
 def cme_times(times):
+    """
+    Takes a list of frame timestamps and returns minutes from zero, where zero 
+    is the earliest timstamp.
+    
+    Parameters
+    ----------
+    times : list
+        2 or more timestamps in the format YYYY-MM-DDTHH:MM:00.
 
+    Returns
+    ----------
+    minutes : list
+        Minutes from zero.
+    """
     timesmk = []
     minutes = [0]
 
@@ -421,21 +545,37 @@ def cme_times(times):
 
 
 def make_eUCLID(cmes_list):
+    """
+    Parameters
+    ----------
+    cmes_list : list or array
+        A nested list where it would have lists inside of it, each sublist
+        has multiple measurements of the same CME. ie [[m1,m2,m3,m4],[m1,m2]]
+        would have 2 cmes. CME 1 has four measurements and CME 2 has 2 measurements.
+        Each measurement is a GCS output file.
 
+    Returns
+    ----------
+    all_cmesdf : pandas DataFrame
+        A data frame containing time, longitude, latitude, tilt angle, velocity,
+        ascpect ratio, and half angle for each measurement of each CME.
+
+    cmedf : pandas DataFrame
+        a DataFrame containing average time, longitude, latitude, tilt angle,
+        velocity, ascpect ratio, half angle, and time at 21.5 solar radii for
+        each CME.
+    """
     # Create empty dataframes to populate later
     cmedf = pd.DataFrame()
     all_cmesdf = pd.DataFrame()
     # Loop through each cme in the list of cmes
     for cme in cmes_list:
-        # loop through each measurement of the cme
         tempdf = pd.DataFrame()
+        # loop through each measurement of the cme
         for mf in cme:
-
             # Read the measurement into a dataframe
             measurement = pd.read_csv(mf, names=["Time", "Lon", "Lat", "ROT", "Height", "Ratio", "Half Angle"],
                                       delim_whitespace=True, header=0, usecols=[0, 1, 2, 3, 4, 5, 6])
-            # find the average of each parameter in one measurement
-            ave_measurement = measurement.mean()
             # Turn zulu into mathable times
             times_list = cme_times(measurement["Time"])
             # calculate velocity
@@ -444,17 +584,17 @@ def make_eUCLID(cmes_list):
             # Use velocity to calculate the time at 21.5 Rs
             enlilstart = find_cme_start(measurement["Time"][len(
                 measurement["Time"]) - 1], measurement["Height"][len(measurement["Height"]) - 1], velocity)
+            # find the average of each parameter in one measurement
+            ave_measurement = measurement.mean()
             # turn the averages into a dataframe so that it can easily be appended
             ave_measurement = pd.DataFrame({"Time": measurement["Time"][len(measurement["Time"]) - 1], 'Lon': cr2sh(measurement["Time"][len(measurement["Time"]) - 1], ave_measurement['Lon']), 'Lat': ave_measurement['Lat'], 'ROT': ave_measurement['ROT'],
                                             "Velocity": velocity, 'Ratio': ave_measurement['Ratio'], 'Half Angle': ave_measurement['Half Angle'], "Time at 21.5": enlilstart[:16] + "Z"}, index=[0])
             # add this measurement to the df containing all individual measurements
             all_cmesdf = all_cmesdf.append(ave_measurement, ignore_index=True)
             tempdf = tempdf.append(ave_measurement, ignore_index=True)
-            ave_of_temp = tempdf.mean()
-
-            transferdf = pd.DataFrame({"Time": ave_measurement["Time"], 'Lon': ave_of_temp["Lon"], 'Lat': ave_of_temp['Lat'], 'ROT': ave_of_temp['ROT'],
-                                       "Velocity": ave_of_temp["Velocity"], 'Ratio': ave_of_temp['Ratio'], 'Half Angle': ave_of_temp['Half Angle'], "Time at 21.5": find_cme_start(tempdf["Time"][len(tempdf["Time"]) - 1], measurement["Height"][len(measurement["Height"]) - 1], ave_of_temp["Velocity"])}, index=[0])
-
+        ave_of_temp = tempdf.mean()
+        transferdf = pd.DataFrame({"Time": ave_measurement["Time"], 'Lon': ave_of_temp["Lon"], 'Lat': ave_of_temp['Lat'], 'ROT': ave_of_temp['ROT'],
+                                   "Velocity": ave_of_temp["Velocity"], 'Ratio': ave_of_temp['Ratio'], 'Half Angle': ave_of_temp['Half Angle'], "Time at 21.5": find_cme_start(tempdf["Time"][len(tempdf["Time"]) - 1], measurement["Height"][len(measurement["Height"]) - 1], ave_of_temp["Velocity"])}, index=[0])
         cmedf = cmedf.append(transferdf, ignore_index=True)
     cmedf.to_csv(str(os.path.dirname(os.path.realpath(__file__))
                      ) + '/eUCLID.txt', sep=":")
@@ -463,55 +603,171 @@ def make_eUCLID(cmes_list):
     return(all_cmesdf, cmedf)
 
 
-def make_hist(std_list, range_list,name,units,figdir,labels):
+def make_hist(std_list, range_list, name, units, figdir, labels):
+    """
+    Parameters
+    ----------
+    std_list : list or array
+        list of standard deviations you wish to plot on the histogram
+
+    range_list : list or array
+        list of ranges you wish to plot on the histogram
+
+    name : string
+        Name of the parameter which is being plotted
+
+    units : dictionary
+        Dictionary where the key is the name and each name is linked to the
+        proper units for that parameter
+
+    figdir : string
+        Full path to the directory in which you would like to store the histogram
+
+    labels : dictionary
+        Dictionary where the key is the name and each name is linked to the
+        proper name of the parameter which you would like to appear on the
+        final histograms.
+    """
 
     if labels[name] == "Tilt Angle":
-        b = np.arange(0,max(range_list)+20,20)
+        b = np.arange(0, max(range_list) + 20, 20)
 
     elif labels[name] == "Half Angle":
-        b = np.arange(0,max(range_list)+5,5)
+        b = np.arange(0, max(range_list) + 5, 5)
 
     elif units[name] == "(Degrees)":
         #b = int(max(range_list)/2)
-        b = np.arange(0,max(range_list)+1,2)
+        b = np.arange(0, max(range_list) + 1, 2)
 
     elif units[name] == '':
         #b = int(max(range_list)/0.1)
-        b = np.arange(0,max(range_list)+0.1,0.1)
+        b = np.arange(0, max(range_list) + 0.1, 0.1)
     else:
-        b = np.arange(0,max(range_list)+50,50)
-    plt.hist(std_list, bins=b, alpha=0.5, label='Standard Deviation', color = "#FFCD8C")
-    plt.hist(range_list, bins=b, alpha=0.3, label='Range', color = '#74A7C4')
+        b = np.arange(0, max(range_list) + 50, 50)
+    plt.hist(std_list, bins=b, alpha=0.5,
+             label='Standard Deviation', color="#FFCD8C")
+    plt.hist(range_list, bins=b, alpha=0.3, label='Range', color='#74A7C4')
     plt.title("Standard Deviation and Range of " +
               labels[name], size=18, fontname='Verdana')
-    plt.xlabel(units[name],size=14, fontname='Verdana')
-    plt.ylabel("Frequency",size=14, fontname='Verdana')
+    plt.xlabel(units[name], size=14, fontname='Verdana')
+    plt.ylabel("Frequency", size=14, fontname='Verdana')
     plt.xticks(fontsize=15, fontname='Verdana')
     plt.yticks(fontsize=15, fontname='Verdana')
     plt.legend(loc='best')
     plt.savefig(figdir + "std_range_hists/" +
-                name + "_hist.png", overwrite=True,dpi=500)
+                name + "_hist.png", overwrite=True, dpi=500)
     plt.clf()
 
-def make_scatter(std_list,range_list,mean_list,name,units,figdir,labels):
-    plt.scatter(mean_list,std_list,color = '#2F454F',label = "Standard Deviation")
-    """plt.title("Mean vs. Standard Deviation of "+labels[name], size=20,fontname='Verdana')
-    plt.xlabel("Mean "+units[name],size=14, fontname='Verdana')
-    plt.ylabel("Standard Deviation "+units[name],size=14, fontname='Verdana')
-    plt.xticks(fontsize=15, fontname='Verdana')
-    plt.yticks(fontsize=15, fontname='Verdana')
-    plt.tight_layout()
-    plt.savefig(figdir+"std_range_scatters/std_"+name+"_scatter.png",overwrite=True)
-    plt.clf()"""
 
-    plt.scatter(mean_list,range_list, color ="#F7941D",label="Range")
+def make_scatter(std_list, range_list, mean_list, name, units, figdir, labels):
+    """
+    Parameters
+    ----------
+    std_list : list or array
+        list of standard deviations you wish to plot on the scatter plots
+
+    range_list : list or array
+        list of ranges you wish to plot on the scatter plots
+
+    mean_list : list or array
+        list of means you wish to plot on the scatter plots
+
+    name : string
+        Name of the parameter which is being plotted
+
+    units : dictionary
+        Dictionary where the key is the name and each name is linked to the
+        proper units for that parameter
+
+    figdir : string
+        Full path to the directory in which you would like to store the scatter
+        plot
+
+    labels : dictionary
+        Dictionary where the key is the name and each name is linked to the
+        proper name of the parameter which you would like to appear on the
+        final scatter plots.
+    """
+    plt.scatter(mean_list, std_list, color='#2F454F',
+                label="Standard Deviation")
+    plt.scatter(mean_list, range_list, color="#F7941D", label="Range")
     if name == 'Half Angle':
-        plt.xlim(8,39)
-    plt.xlabel("Mean "+units[name],size=14, fontname='Verdana')
-    plt.ylabel(units[name],size=14, fontname='Verdana')
+        plt.xlim(8, 39)
+    plt.xlabel("Mean " + units[name], size=14, fontname='Verdana')
+    plt.ylabel(units[name], size=14, fontname='Verdana')
     plt.xticks(fontsize=15, fontname='Verdana')
     plt.yticks(fontsize=15, fontname='Verdana')
-    plt.title("Standard Deviation and Range of "+labels[name], size=18,fontname='Verdana')
+    plt.title("Standard Deviation and Range of " +
+              labels[name], size=18, fontname='Verdana')
     plt.legend(loc=1)
-    plt.savefig(figdir+"std_range_scatters/range_"+name+"_scatter.png",overwrite=True,dpi=500)
+    plt.savefig(figdir + "std_range_scatters/range_" +
+                name + "_scatter.png", overwrite=True, dpi=500)
     plt.clf()
+
+
+def plot_cmes(cmedf, all_cmesdf, dates, units, labels, figdir):
+    """
+    Parameters
+    ----------
+    cmedf : pandas DataFrame
+        a DataFrame containing average time, longitude, latitude, tilt angle,
+        velocity, ascpect ratio, half angle, and time at 21.5 solar radii for
+        each CME.
+
+    all_cmesdf : pandas DataFrame
+        A data frame containing time, longitude, latitude, tilt angle, velocity,
+        ascpect ratio, and half angle for each measurement of each CME.
+
+    dates : list or array
+        list or array containing strings which are the dates of the CMEs in the
+        format "YYYY-MM-DD".
+
+    units : dictionary
+        Dictionary where the key is the name and each name is linked to the
+        proper units for that parameter
+
+    labels : dictionary
+        Dictionary where the key is the name and each name is linked to the
+        proper name of the parameter which you would like to appear on the
+        final scatter plots.
+
+    figdir : string
+        Full path to the directory in which you would like to store the scatter
+        plot
+    """
+    normarray = []
+    for name in all_cmesdf.columns:
+        if all_cmesdf[name].dtypes != 'object':
+            mean_list, std_list, range_list = [], [], []
+
+            name_norm_array = []
+            new_norm = pd.Series()
+            for base_time in dates:
+                temp_storage = []
+                for ind_time, x in zip(all_cmesdf["Time"], all_cmesdf[name]):
+                    if base_time[:10] == ind_time[:10]:
+                        temp_storage.append(x)
+
+
+                mean_p = np.mean(temp_storage)
+                mean_list.append(mean_p)
+                std_p = np.std(temp_storage)
+                std_list.append(std_p)
+                range_p = max(temp_storage) - min(temp_storage)
+                range_list.append(range_p)
+
+                if name == "Velocity":
+                    norms = ((np.array(temp_storage) - np.mean(np.array(temp_storage))
+                              ) / np.mean(np.array(temp_storage))) * 100
+                else:
+                    norms = (np.array(temp_storage) -
+                             np.mean(np.array(temp_storage)))
+
+                for i in norms:
+                    name_norm_array.append(i)
+                normarray.append(norms)
+
+            make_hist(std_list, range_list, name, units, figdir, labels)
+            if name == "Velocity" or name == "Half Angle":
+                make_scatter(std_list, range_list, mean_list,
+                            name, units, figdir, labels)
