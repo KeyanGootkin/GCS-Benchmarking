@@ -12,9 +12,11 @@ To aid in solving this problem we have created eUCLID: the Universal CME modeL I
 
 ### eUCLID.txt
 
-### v_measure.py
+A text file containing a pandas DataFrame containing average time, longitude, latitude, tilt angle, velocity, ascpect ratio, half angle, and time at 21.5 solar radii for historical CMEs. These parameters can be used as inputs into CME propagation models for validation purposes.
 
 ### gcs_analysis.py
+
+A python script which creates/updates eUCLID. In addition, gcs_analysis.py will calculate the spread in measurements of the same CME and saves these results as histograms and scatterplots in a path named "figdir" which must be specified. This is useful in understanding the errors in the CME measurement process, and getting a sense of how accurate the measurements used are.
 
 ### carrots.txt
 
@@ -28,9 +30,13 @@ A few motivating and useful examples of how your product can be used. Spice this
 _For more examples and usage, please refer to the [Wiki][wiki]._
 
 
-## Meta
+## Authors
 
-Keyan Gootkin – Keyan.Gootkin@NASA.gov or goot1024@uw.edu – [@KeyanGootkin](https://twitter.com/KeyanGootkin) 
+* Keyan Gootkin – Keyan.Gootkin@NASA.gov or goot1024@uw.edu – [@KeyanGootkin](https://twitter.com/KeyanGootkin) 
+
+* M. Crawford - M.Crawford.Velez@gmail.com
+
+* Rachel Broemmelsiek - rbroemme@terpmail.umd.edu
 
 Distributed under the XYZ license. See ``LICENSE`` for more information.
 
