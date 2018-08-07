@@ -68,7 +68,7 @@ For model validation purposes the most important file is eUCLID.txt. The content
 
 ### CME Measurement
 
-This repository could also be used to analyze other GCS measurements of CMEs. To do this download croissant.py and recreate the file structure in the data folder. Use make_eUCLID() from croissant to create a pandas DataFrame containing the averaged measurements of each CME. make_eUCLID() also outputs a different DataFrame which has all of the measurements of all of the CMEs. This DataFrame can be used to measure the spread in measurements for the different parameters. This information can assist in understanding the error involved in GCS measurement process.
+This repository could also be used to analyze other GCS measurements of CMEs. To do this download croissant.py and recreate the file structure in the data folder. Use make_eUCLID() from croissant to create a pandas DataFrame containing the averaged measurements of each CME. make_eUCLID() also outputs a different DataFrame which has all of the measurements of all of the CMEs. This DataFrame can be used to measure the spread in measurements for the different parameters. This information can assist in understanding the error involved in GCS measurement process. The easiest way to find this info is to run gcs_analysis.py, which will produce helpful histograms and scatter plots.
 
 ## Authors
 
