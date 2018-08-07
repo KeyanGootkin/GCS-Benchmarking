@@ -351,20 +351,14 @@ def find_cme_start(start_t, start_h, velocity):
     return(end_time)
 
 
-def cr2sh(date, carrington):
-<<<<<<< HEAD
-    
+def cr2sh(date, carrington):    
     """
     Takes a date and Carrington longitude and returns a Stonyhurst longitude.
-=======
-    """
     Converts carrington to stonyhurst
->>>>>>> 87858699faa1cb07e40b4ca32a770a46e4b425ab
 
     Parameters
     ----------
     date : string
-<<<<<<< HEAD
         Date and time in the format "YYYY-MM-DDTHH:MM:00"
 
     carrington : float
@@ -374,10 +368,7 @@ def cr2sh(date, carrington):
     ----------
     stonyhurst : float
         Stonyhurst longitude.
-    """
-=======
         The date of the longitude measurement in the format "YYYY-MM-DDTHH:MMZ"
->>>>>>> 87858699faa1cb07e40b4ca32a770a46e4b425ab
 
     carrington : float
         Longitude in carrington coordinates.
@@ -407,16 +398,12 @@ def cr2sh(date, carrington):
 
 def sh2cr(date, stonyhurst):
     """
-<<<<<<< HEAD
     Takes a date and Stonyhurst longitude and returns a Carrington longitude.
-=======
     Converts stonyhurst to carrington
->>>>>>> 87858699faa1cb07e40b4ca32a770a46e4b425ab
 
     Parameters
     ----------
     date : string
-<<<<<<< HEAD
         Date and time in the format "YYYY-MM-DDTHH:MM:00"
 
     carrington : float
@@ -426,9 +413,7 @@ def sh2cr(date, stonyhurst):
     ----------
     carrington : float
         Carrington longitude.
-    """
-    
-=======
+
         The date of the longitude measurement in the format "YYYY-MM-DDTHH:MMZ"
 
     stonyhurst : float
@@ -440,7 +425,6 @@ def sh2cr(date, stonyhurst):
     carrington : float
         Longitude in carrington coordinates.
     """
->>>>>>> 87858699faa1cb07e40b4ca32a770a46e4b425ab
     carrots = np.loadtxt(
         str(os.path.dirname(os.path.realpath(__file__))) + "/carrots.txt")
     # re-commenting this is beneath my dignity
@@ -457,15 +441,15 @@ def sh2cr(date, stonyhurst):
 
 
 def cme_match(*directories):
-    
+
     """
-    Looks at all .rt files in the given directory or directories and groups 
-    them up by CME. 
-    
+    Looks at all .rt files in the given directory or directories and groups
+    them up by CME.
+
     Parameters
     ----------
     directories : string
-        0 or more directory names. If 0, cme_match() finds all appropriately 
+        0 or more directory names. If 0, cme_match() finds all appropriately
         named .rt files in /data/[acjkr]data/.
 
     Returns
@@ -502,9 +486,9 @@ def cme_match(*directories):
 
 def cme_times(times):
     """
-    Takes a list of frame timestamps and returns minutes from zero, where zero 
+    Takes a list of frame timestamps and returns minutes from zero, where zero
     is the earliest timstamp.
-    
+
     Parameters
     ----------
     times : list
