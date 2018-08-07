@@ -22,6 +22,10 @@ A python module which contains all of the functions used in the repository. Impo
 
 A python script which creates/updates eUCLID. In addition, gcs_analysis.py will calculate the spread in measurements of the same CME and saves these results as histograms and scatterplots in a path named "figdir" which must be specified. This is useful in understanding the errors in the CME measurement process, and getting a sense of how accurate the measurements used are.
 
+#### all_cmes.txt 
+
+A text file containing a list of dates and times of 2011 historic CMEs which are suitable for measurement and useable for eUCLID. The criteria for making this list was having a half width of over 30 degrees and a velocity of over 400 km/s.
+
 #### carrots.txt
 
 List of Carrington rotation start times, in seconds since the beginning of the unix epoch. Used for conversion from Carrington coordinates to Stonyhurst coordinates.
