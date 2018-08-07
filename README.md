@@ -45,7 +45,7 @@ import croissant as cr
 
 #### gcs_analysis.py
 
-A python script which creates/updates eUCLID. In addition, gcs_analysis.py will calculate the spread in measurements of the same CME and saves these results as histograms and scatterplots in a path named "figdir" which must be specified. This is useful in understanding the errors in the CME measurement process, and getting a sense of how accurate the measurements used are.
+A python script which creates/updates eUCLID. In addition, gcs_analysis.py will calculate the spread in measurements of the same CME and saves these results as histograms and scatterplots in a path named "figdir" __which must be defined on line 8 of gcs_analysis.py__. This is useful in understanding the errors in the CME measurement process, and getting a sense of how accurate the measurements used are.
 
 #### all_cmes.txt 
 
