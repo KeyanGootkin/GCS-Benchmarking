@@ -28,27 +28,32 @@ List of Carrington rotation start times, in seconds since the beginning of the u
 
 #### data 
 
-A series of folders containing GCS output files. gcs_analysis.py draws from these folders to create eUCLID.
+A series of folders containing GCS output files. gcs_analysis.py draws from these folders to create eUCLID. 
 
 
 ## Usage
 
 ### Model Validation
 
+For model validation purposes the most important file is eUCLID.txt. The contents of that table will serve as the inputs for CME propogation models. _Note_: Half angle in eUCLID is not the same as half width. Half angle is a quality as described in this [paper by A. Thernisien](http://iopscience.iop.org/article/10.1088/0067-0049/194/2/33/meta). Half width can be calculated using half angle and ratio.
 
 ### CME Measurement
 
+This repository could also be used to analyze other GCS measurements of CMEs. To do this download croissant.py and recreate the file structure in the data folder. Use make_eUCLID() from croissant to create a pandas DataFrame containing the averaged measurements of each CME.
+
 ## Authors
 
-Please send any questions or comments regarding the code here to Keyan Gootkin.
+Please send any questions or comments regarding the code in this repository to Keyan Gootkin.
 
 * Keyan Gootkin – Keyan.Gootkin@NASA.gov or goot1024@uw.edu – Twitter: [@KeyanGootkin](https://twitter.com/KeyanGootkin) 
 
-* M. Crawford - M.Crawford.Velez@gmail.com
+* M. Crawford - m.crawford.velez@gmail.com
 
 * Rachel Broemmelsiek - rbroemme@terpmail.umd.edu
 
 * Austin Skipper - skippera22@mail.wlu.edu
+
+* Jinkoo Yim - jinkooyim@gmail.com
 
 
 
