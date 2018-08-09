@@ -62,6 +62,8 @@ A series of folders containing GCS output files. gcs_analysis.py draws from thes
 
 ## Usage
 
+Check out the [Wiki](https://github.com/KeyanGootkin/GCS-Benchmarking/wiki/Making-Measurements-for-eUCLID) to figure out how to make and submit GCS measurements for eUCLID.
+
 ### Model Validation
 
 For model validation purposes the most important file is eUCLID.txt. The contents of that table will serve as the inputs for CME propogation models. __Note__: Half angle in eUCLID is not the same as half width. Half angle is a quality as described in this [paper by A. Thernisien](http://iopscience.iop.org/article/10.1088/0067-0049/194/2/33/meta). Half width can be calculated using half angle and ratio.
