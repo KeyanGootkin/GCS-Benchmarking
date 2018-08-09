@@ -439,6 +439,44 @@ def sh2cr(date, stonyhurst):
     else:
         return carrington
 
+def cme_list(*directories):
+
+    """
+    Looks at all .rt files in the given directory or directories and returns a 
+    chronologically sorted list of unique CMEs.
+
+    Parameters
+    ----------
+    directories : string
+        0 or more directory names. If 0, cme_match() finds all appropriately
+        named .rt files in /data/[acjkr]data/.
+
+    Returns
+    ----------
+    cmes : list
+        List of CMEs.
+    """
+
+    files, cmes = [], []
+
+    # if no arguments grab all files, otherwise grab specified files
+    if len(directories) == 0:
+        files.extend(glob(str(os.path.dirname(os.path.realpath(__file__))) +
+                          "/data/[acjkr]data/[0-9]WLRT_[1-2]???-??-??_????.rt"))
+    else:
+        for directory in directories:
+            files.extend(glob(str(os.path.dirname(os.path.realpath(
+                __file__))) + "/" + directory + "/[0-9]WLRT_[1-2]???-??-??_????.rt"))
+
+    # pull out just the filenames
+    for file in files:
+        cmes.append(file[-24:-8])
+
+    # massage this list so it's tidier
+    cmes = list(set(cmes))
+    cmes.sort()
+
+    return cmes
 
 def cme_match(*directories):
 
@@ -471,18 +509,18 @@ def cme_match(*directories):
 
     # pull out just the filenames
     for file in files:
-        cmes.append(file[-17:-7])
+        cmes.append(file[-24:-8])
 
     # massage this list so it's tidier
     cmes = list(set(cmes))
     cmes.sort()
+    
 
     # list files for each CME
     for cme in cmes:
         matches.append([file for file in files if cme in file])
 
     return matches
-
 
 def cme_times(times):
     """
