@@ -47,9 +47,21 @@ import croissant as cr
 
 A python script which creates/updates eUCLID. In addition, gcs_analysis.py will calculate the spread in measurements of the same CME and saves these results as histograms and scatterplots in a path named "figdir" __which must be defined on line 8 of gcs_analysis.py__. This is useful in understanding the errors in the CME measurement process, and getting a sense of how accurate the measurements used are.
 
-#### all_cmes.txt 
+#### 2011_CME_list 
 
-A text file containing a list of dates and times of 2011 historic CMEs which are suitable for measurement and useable for eUCLID. The criteria for making this list was having a half width of over 30 degrees and a velocity of over 400 km/s.
+A folder with the tools to find 2011 historic CMEs which are suitable for measusurement and useable for eUCLID.
+
+##### Scpripts
+
+UseableCMEs.py is a python script that searches the 2011 CME catalog files to find the CMEs that fit the criteria.
+
+##### Catalog files
+
+The univ11 txt files are from the SOHO LASCO CME CATALOG at: https://cdaw.gsfc.nasa.gov/CME_list/. This catalog contains all CMEs manually identified through LASCO C2 and C3.
+
+##### CME lists
+
+all_cmes_400.txt and all_cmes_500.txt are lists of CMEs from 2011 that fit specific criteria. In the case of all_cmes_400.txt, it is all the CMEs that have a half-width of greater than 30 degrees and were measured with a speed of greater than 400 km/s. In the case of all_cmes_500.txt, it is all the CMEs that have a half-width of greater than 50 degrees and were measured with a speed of greater than 500 km/s.
 
 #### carrots.txt
 
